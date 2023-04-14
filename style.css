@@ -1,0 +1,97 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+}
+
+/*---------Calculator Container----------*/
+#calc {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.calculator{
+    width: 400px;
+    height: auto;
+    display: flex;
+    background-color: #f2f2f2;
+
+    flex-direction: column;
+    justify-content: center;
+}
+
+/*---------Display----------*/
+.display {
+    height: 150px;
+}
+.answer {
+    height: 100px;
+}
+.question {
+    height: 50px;
+    width: 100%;
+}
+
+/*---------M buttons----------*/
+.m-buttons {
+    display: flex;
+    justify-content: space-around;
+    background-color: none;
+}
+.m-button, .t-button, .f-button {
+    padding: 15px;
+}
+.low-op-button {
+    opacity: .3;
+}
+
+/*---------Scientific buttons----------*/
+.scientific-buttons {
+    display: flex;
+    justify-content: left;
+}
+.drop-down {
+    margin: 0 20px;
+    background: none;
+    border: none;
+}
+.drop-down option sup {
+    border: 2px solid black;
+}
+
+/*---------Normal buttons----------*/
+.n-buttons{
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+}
+.n-button {
+    text-align: center;
+}
+.n-button svg{
+    width: 25px;
+    height: 15px;
+}
+.n-button {
+    padding: 10px;
+    margin: 1px;
+    background-color: #f7f8f8;
+}
+.number {
+    background-color: #fdfdfd;
+    font-weight: bolder;
+    font-size: 20px;
+}
+.equalTo {
+    background-color: #91c1e7;
+}
+.button, .m-button, .t-button{
+    user-select: none;
+    cursor: pointer;
+}
