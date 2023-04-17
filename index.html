@@ -16,6 +16,7 @@
                 <div class="question"></div>
             </div>
             <div class="buttons">
+
                 <div class="m-buttons">
                     <div class="m-button low-op-button button" id="MC">MC</div>
                     <div class="m-button low-op-button button" id="MR">MR</div>
@@ -23,18 +24,18 @@
                     <div class="m-button button" id="M-">M-</div>
                     <div class="m-button button" id="Ms">MS</div>
                 </div>
-                <div class="scientific-buttons">
-                    <div class="t-button">
-                        <label for="">Trigonometry</label>
-                        <select name="trigonometry" id="trigonometry" class="drop-down">
-                            <option value="sin">sin</option>
-                            <option value="cos">cos</option>
-                            <option value="tan">tan</option>
-                            <option value="sin^-1">sin<sup>-1</sup></option>
-                            <option value="cos^-1">cos<sup>-1</sup></option>
-                            <option value="tan^-1">tan<sup>-1</sup></option>
-                        </select>
-                    </div>
+
+                <div class="t-buttons">
+                    <label for="">Trigonometry</label>
+                    <select name="trigonometry" id="trigonometry" class="drop-down button">
+                        <option value="sin">sin</option>
+                        <option value="cos">cos</option>
+                        <option value="tan">tan</option>
+                        <option value="sin^-1">sin<sup>-1</sup></option>
+                        <option value="cos^-1">cos<sup>-1</sup></option>
+                        <option value="tan^-1">tan<sup>-1</sup></option>
+                    </select>
+                </div>
 
                 </div>
                 <div class="n-buttons">
@@ -42,9 +43,9 @@
                     <div class="n-button button" id="π">π</div>
                     <div class="n-button button" id="e">e</div>
                     <div class="n-button button" id="C">C</div>
-                    <div class="n-button button" >
+                    <div class="n-button button" id="clear">
                         <?xml version="1.0" encoding="iso-8859-1"?>
-                        <svg id="clear" fill="#000000" height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                        <svg fill="#000000" height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                             viewBox="0 0 512 512" xml:space="preserve">
                         <g>
                             <g>
@@ -61,26 +62,27 @@
                         </g>
                         </svg>
                     </div>
-                    <div class="n-button button" id="x^2">X <sup>2</sup></div>
-                    <div class="n-button button" id="1/x">1/x</div>
-                    <div class="n-button button" id="|x|">|x|</div>
-                    <div class="n-button button" id="exp">exp</div>
+                    <div class="n-button button" id="**2">X <sup>2</sup></div>
+                    <div class="n-button button" id="**-1">1/x</div>
+                    <div class="n-button button" id="x-modules">|x|</div>
+                    <div class="n-button button" id="x-exp">exp</div>
                     <div class="n-button button" id="mod">mod</div>
-                    <div class="n-button button" id="squrt"> <sup>2</sup>√x </div>
+                    <div class="n-button button" id="x-squrt"> <sup>2</sup>√x </div>
                     <div class="n-button button" id="(">(</div>
                     <div class="n-button button" id=")">)</div>
-                    <div class="n-button button" id="n!">n!</div>
-                    <div class="n-button button" id="/">
-                        <svg stroke="currentColor" fill="none" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14 7C14 8.10457 13.1046 9 12 9C10.8954 9 10 8.10457 10 7C10 5.89543 10.8954 5 12 5C13.1046 5 14 5.89543 14 7Z" fill="currentColor"></path><path d="M3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12Z" fill="currentColor"></path><path d="M12 19C13.1046 19 14 18.1046 14 17C14 15.8954 13.1046 15 12 15C10.8954 15 10 15.8954 10 17C10 18.1046 10.8954 19 12 19Z" fill="currentColor"></path></svg>
+                    <div class="n-button button" id="!">n!</div>
+                    <div class="n-button button" id="÷">
+                        <svg stroke="currentColor"
+                         fill="none" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M14 7C14 8.10457 13.1046 9 12 9C10.8954 9 10 8.10457 10 7C10 5.89543 10.8954 5 12 5C13.1046 5 14 5.89543 14 7Z" fill="currentColor"></path><path d="M3 12C3 11.4477 3.44772 11 4 11H20C20.5523 11 21 11.4477 21 12C21 12.5523 20.5523 13 20 13H4C3.44772 13 3 12.5523 3 12Z" fill="currentColor"></path><path d="M12 19C13.1046 19 14 18.1046 14 17C14 15.8954 13.1046 15 12 15C10.8954 15 10 15.8954 10 17C10 18.1046 10.8954 19 12 19Z" fill="currentColor"></path></svg>
                     </div>
-                    <div class="n-button button" id="x^y">X <sup>y</sup></div>
+                    <div class="n-button button" id="x-pow-y">X <sup>y</sup></div>
                     <div class="n-button button number" id="7">7</div>
                     <div class="n-button button number" id="8">8</div>
                     <div class="n-button button number" id="9">9</div>
                     <div class="n-button button" id="*">
                         <?xml version="1.0" ?><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:none;}</style></defs><title/><g data-name="Layer 2" id="Layer_2"><path d="M4,29a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.42l24-24a1,1,0,1,1,1.42,1.42l-24,24A1,1,0,0,1,4,29Z"/><path d="M28,29a1,1,0,0,1-.71-.29l-24-24A1,1,0,0,1,4.71,3.29l24,24a1,1,0,0,1,0,1.42A1,1,0,0,1,28,29Z"/></g><g id="frame"><rect class="cls-1" height="32" width="32"/></g></svg>
                     </div>
-                    <div class="n-button button" id="10^x">10 <sup>x</sup></div>
+                    <div class="n-button button" id="x-pow-to-10">10 <sup>x</sup></div>
                     <div class="n-button button number" id="4">4</div>
                     <div class="n-button button number" id="5">5</div>
                     <div class="n-button button number" id="6">6</div>

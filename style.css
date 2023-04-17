@@ -30,13 +30,19 @@ body {
 /*---------Display----------*/
 .display {
     height: 150px;
+    user-select: none; 
+    overflow: hidden;
 }
 .answer {
     height: 100px;
+    padding: 10px;
+    font-size: 35px;
 }
 .question {
     height: 50px;
     width: 100%;
+    padding: 10px;
+    font-size: 25px;
 }
 
 /*---------M buttons----------*/
@@ -52,10 +58,11 @@ body {
     opacity: .3;
 }
 
-/*---------Scientific buttons----------*/
-.scientific-buttons {
+/*---------Trigonometry buttons----------*/
+.t-buttons {
     display: flex;
     justify-content: left;
+    margin: 20px;
 }
 .drop-down {
     margin: 0 20px;
@@ -80,7 +87,7 @@ body {
 }
 .n-button {
     padding: 10px;
-    margin: 1px;
+    margin: 1.5px;
     background-color: #f7f8f8;
 }
 .number {
