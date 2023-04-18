@@ -1,17 +1,72 @@
+const parentButton = document.querySelector(".buttons");
+let inputString = "";
 
-// add onclick eventlister
-const getButtons = function() {
-    const buttons = document.querySelectorAll(".button");
-    return buttons;
-}
-const addEventListener = function() {
-    let buttons = getButtons();
-    buttons.forEach( button => {
-        button.addEventListener('click', handleClick);
-    });
-}
+parentButton.addEventListener('click', function handleClick(event) {
 
-// main calculator logic
+    let input = getDisplay()[0];
+    let output = getDisplay()[1];
+
+    let clickedButtonId = getclickedButtonId(event); 
+
+    switch (clickedButtonId) {
+        case "AC":
+            input.innerText = ""; 
+            output.innerText = "";
+            inputString = "";
+            break;
+
+        case "clear":
+            input.innerText = input.innerText.slice(0, input.innerText.length - 1);
+            inputString = inputString.slice(0, inputString.length - 1);
+            break;
+
+        case "=":
+            try {
+                let answer = eval(inputString);
+                inputString = answer;
+
+                console.log(answer);
+                if(answer.toString() == "NaN") {
+                    console.log(" tert ");
+                    throw new Error("");
+                }
+
+                input.innerText = "(" + input.innerHTML + ")";
+                output.innerText = answer;
+                output.style.color = "black";
+
+            } catch (error) {
+                showError("invalid input");
+            }
+            break;
+
+        case operatorNumber.includes(clickedButtonId) ? clickedButtonId: false:
+            inputString += validComputerString(clickedButtonId);
+            input.innerText += clickedButtonId;
+            break;
+        
+        case xTypefunction.includes(clickedButtonId) ? clickedButtonId: false:
+
+            if(clickedButtonId === "√") {
+                charArray = input.innerText.split("");
+                charArray.unshift("√(");
+                charArray.push(")");
+                input.innerText = charArray.join("");
+                inputString = "Math.sqrt(" + inputString + ")";
+                console.log(inputString);
+                break;
+            } else {
+                input.innerText += validUserString(clickedButtonId);
+                inputString += validComputerString(clickedButtonId);
+            }
+            break;
+
+        default:
+            break;
+    }
+    
+});
+
 const getclickedButtonId = function(event) {
     const clickedButton = event.target;
     let isSvgOrPath =  clickedButton instanceof SVGElement || clickedButton instanceof SVGPathElement;  // check clicked button is SVG or path
@@ -47,109 +102,17 @@ const validInput = function(inputMessage) {
 }
 
 const operatorNumber = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "÷", "mod", "*", "(", ")", "π", "e"];
-const xTypefunction = ["**2", "**1/2", "||", "e**", "**-1", "**", "10**"];
+const xTypefunction = ["^2", "√", "||", "e^", "1/", "^", "10^","e"];
 
-function validString(givenString) {
+function validComputerString(givenString) {
     return  (givenString
             .replaceAll("mod", "%")
             .replaceAll("÷", "/")
-            .replaceAll("π", Math.PI)
-            .replaceAll("e", Math.E));
+            .replaceAll("π", "Math.PI")
+            .replaceAll("e"," Math.E")
+            .replaceAll("^", "**"));
 }
-let inputString = "";
-
-function handleClick(event) {
-
-    let input = getDisplay()[0];
-    let output = getDisplay()[1];
-
-    let clickedButtonId = getclickedButtonId(event); 
-    switch (clickedButtonId) {
-        case "AC":
-            input.innerText = ""; 
-            output.innerText = "";
-            inputString = "";
-            break;
-
-        case "clear":
-            input.innerText = input.innerText.slice(0, input.innerText.length - 1);
-            inputString = inputString.slice(0, inputString.length - 1);
-            break;
-
-        case "=":
-            try {
-                let answer = eval(inputString);
-                inputString = answer;
-                input.innerText = "(" + input.innerHTML + ")";
-                output.innerText = answer;
-                output.style.color = "black";
-
-            } catch (error) {
-                showError("invalid input");
-            }
-            break;
-
-        case operatorNumber.includes(clickedButtonId) ? clickedButtonId: false:
-            inputString += validString(clickedButtonId);
-            console.log(inputString);
-            input.innerText += clickedButtonId;
-        
-        case xTypefunction.includes(clickedButtonId) ? clickedButtonId: false:
-
-            let ePowOrtenPow = clickedButtonId.substring(clickedButtonId.length - 2, clickedButtonId.length);
-            if(ePowOrtenPow === "**" && clickedButtonId.length > 2) {
-                input.innerText += clickedButtonId.slice(0,-2) + "^";
-                if(clickedButtonId.slice(0,-2) === "e") {
-                    inputString += "2.718282**";
-                } else {
-                    inputString += clickedButtonId;
-                }
-
-            } else if(clickedButtonId === "**" || clickedButtonId === "**2"  || clickedButtonId === "**1/2" || clickedButtonId === "||" || clickedButtonId === "e**") {
-                if(input.innerText.length > 0) {
-                    switch (clickedButtonId) {
-                        case "**":
-                            if(validInput(inputString)) {
-                                input.innerText += "^";
-                                inputString += clickedButtonId;
-                            } else {
-                                showError("invalid input");
-                            }               
-                            break;
-                        case "**2":
-                            if(validInput(inputString)) {
-                                input.innerText += "^2";
-                                inputString += clickedButtonId;
-                            } else {
-                                showError("invalid input");
-                            }
-                            break;
-                        case "**1/2":
-                            charArray = input.innerText.split("");
-                            charArray.unshift("√(");
-                            charArray.push(")");
-                            input.innerText = charArray.join("");
-                            inputString = "Math.sqrt(" + inputString + ")";
-                            break;
-                        case "||":
-                            inputString = "Math.abs(" + inputString + ")";
-                            innput.innerText = "|" + input.innerText + "|";
-                        default:
-                            break;
-                    }   
-                } else {
-                    showError("provide input first");
-                }
-            } else if(clickedButtonId === "**-1") {
-                if(input.innerText.length === 0){
-                    input.innerText += "1/";
-                    inputString += "1/";
-                } else {
-                    showError("invalid input");
-                }
-            } else {}
-            break;
-        default:
-            break;
-    }
+function validUserString(givenString) {
+    return givenString;   
 }
+
