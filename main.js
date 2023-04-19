@@ -1,12 +1,128 @@
+// get button & add event listner
 const parentButton = document.querySelector(".buttons");
 let inputString = "";
 
-parentButton.addEventListener('click', function handleClick(event) {
+parentButton.addEventListener('click', handleClick);
+
+// array of all type of functionallity in calculator
+const basicOperator = ["+", "-", "÷", "*"];
+const moderateOperator = ["mod", "(", ")", "π", "e"]
+const number = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+const xTypefunction = ["^2", "√", "||", "e^", "^-1", "^", "10^","e", "log", "ln", "+/-","."];
+const Trigonometry = ["sin", "cos", "tan", "nat", "nis", "soc"];
+const memory = ["M+", "M-", "MS", "MR", "MC"];
+let memoryStorage = [];
+
+// validate input for user and computer
+function validComputerString(givenString) {
+    return  (givenString
+            .replaceAll("mod", "%")
+            .replaceAll("÷", "/")
+            .replaceAll("π", "Math.PI")
+            .replaceAll("e"," Math.E")
+            .replaceAll("^", "**")
+            .replaceAll("log", "Math.log10(")
+            .replaceAll("ln", "Math.log(")
+            .replaceAll("sin", "Math.sin(")
+            .replaceAll("cos", "Math.cos(")
+            .replaceAll("tan", "Math.tan(")
+            .replaceAll("nis", "Math.asin(")
+            .replaceAll("soc", "Math.acos(")
+            .replaceAll("nat", "Math.atan("));
+}
+function validUserString(givenString) {
+    return (givenString
+        .replaceAll("log", "log(")
+        .replaceAll("ln", "ln(")
+        .replaceAll("sin", "sin(")
+        .replaceAll("cos", "cos(")
+        .replaceAll("tan", "tan(")
+        .replaceAll("nis", "sin^-1(")
+        .replaceAll("soc", "cos^-1(")
+        .replaceAll("nat", "tan^-1("));
+
+}  
+
+// get clickedbutton & display, showError
+const getclickedButtonId = function(event) {
+    const clickedButton = event.target;
+    let isSvgOrPath =  clickedButton instanceof SVGElement || clickedButton instanceof SVGPathElement;  // check clicked button is SVG or path
+    
+    if(isSvgOrPath) {
+        return clickedButton.parentElement.id;
+    } else {
+        if(clickedButton.id === "trigonometry") {
+            return  document.querySelector("#trigonometry").value;
+        } else {
+            return clickedButton.id;
+        }
+    }
+}
+const getDisplay = function() {
+    let input = document.querySelector(".question");
+    let output = document.querySelector(".answer");
+
+    return [input, output];
+}
+const showError = function(errMsg) {
+    let output = getDisplay()[1];
+    output.innerText = errMsg;
+    output.style.color = "red";
+}
+const validInput = function(inputMessage) {
+    if(Number(inputMessage) !== NaN) {
+        console.log(Number(inputMessage));
+        return true;
+    } 
+    return false;
+}
+
+const memoryOperation = function(clickedButtonId, input, output) {
+    if(clickedButtonId === "MC") {
+        memoryStorage = [];
+    } else if(clickedButtonId === "MR") {
+        if(memoryStorage.length > 0) {
+            inputString += input.innerText += memoryStorage[0];
+        }
+        // inputString += input.innerText += memoryStorage[0] !== undefined ? memoryStorage[0] : 0;
+    } else if(clickedButtonId === "M+" || clickedButtonId === "M-" || clickedButtonId === "MS") {
+        if(output.innerText.length > 0) {
+            if(clickedButtonId === "MS") {
+                
+                memoryStorage[0] = output.innerText;
+            } else {
+                let getValue = memoryStorage[0];
+                memoryStorage[0] = eval(Number(output.innerText) + clickedButtonId.charAt(1) + getValue);
+            }
+        } else {
+            showError("get answer first");
+        }
+    } 
+}
+
+const enableMemoryButton = function(buttons) {
+    buttons.forEach(button => {
+        button.style.cursor = "pointer";
+        button.style.opacity = "1"
+    }); 
+}
+const disableMemoryButton = function(buttons) {
+    buttons.forEach(button => {
+        button.removeEventListener("click", handleClick);
+        button.style.cursor = "not-allowed";
+        button.style.opacity = ".3" 
+    }); 
+}
+
+function handleClick(event) {
 
     let input = getDisplay()[0];
     let output = getDisplay()[1];
 
     let clickedButtonId = getclickedButtonId(event); 
+    
+    //remove error
+    document.querySelector(".error").innerText = "";
 
     switch (clickedButtonId) {
         case "AC":
@@ -21,14 +137,9 @@ parentButton.addEventListener('click', function handleClick(event) {
         case "=":
             try {
                 let answer = eval(inputString);              
-                let answerString = answer.toString();
-                const dotIndex = answerString.split("").indexOf(".");
 
                 if(answer.toString() == "NaN") {
                     throw new Error("");
-                }
-                if(dotIndex !== -1) {
-                    answer = trimOutput(answerString, dotIndex);
                 }
 
                 inputString = answer;
@@ -41,11 +152,12 @@ parentButton.addEventListener('click', function handleClick(event) {
             }
             break;
 
-        case operator.includes(clickedButtonId) || number.includes(clickedButtonId) ? clickedButtonId: false:
+        case basicOperator.includes(clickedButtonId) || number.includes(clickedButtonId) || moderateOperator.includes(clickedButtonId)? clickedButtonId: false:
             const index = input.innerText.length - 1;
-            if(operator.includes(clickedButtonId) && operator.includes(input.innerText.charAt(index))) {
+            if(basicOperator.includes(clickedButtonId) && basicOperator.includes(input.innerText.charAt(index))) {
                 input.innerText = inputString = inputString.toString().slice(0, index) + clickedButtonId;
             } else {
+                
                 inputString += validComputerString(clickedButtonId);
                 input.innerText += clickedButtonId;
             }
@@ -77,7 +189,7 @@ parentButton.addEventListener('click', function handleClick(event) {
                     inputString = computerCharArray.join("");
                     input.innerText = userCharArray.join("");
                 } else {
-                    showError("provide input");
+                    showError("get answer first");
                 }
 
             } else {
@@ -91,101 +203,15 @@ parentButton.addEventListener('click', function handleClick(event) {
             inputString += validComputerString(clickedButtonId);    
         
         case memory.includes(clickedButtonId) ? clickedButtonId: false:
-            memoryOperation(clickedButtonId);
+            memoryOperation(clickedButtonId, input, output);
         default:
             break;
     }
-    
-});
 
-const operator = ["+", "-", "÷", "mod", "*", "(", ")", "π", "e"];
-const number = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-const xTypefunction = ["^2", "√", "||", "e^", "^-1", "^", "10^","e", "log", "ln", "+/-","."];
-const Trigonometry = ["sin", "cos", "tan", "nat", "nis", "soc"];
-const memory = ["M+", "M-", "MS", "MR", "MC"];
-let memoryStorage = [];
-
-function validComputerString(givenString) {
-    return  (givenString
-            .replaceAll("mod", "%")
-            .replaceAll("÷", "/")
-            .replaceAll("π", "Math.PI")
-            .replaceAll("e"," Math.E")
-            .replaceAll("^", "**")
-            .replaceAll("log", "Math.log10(")
-            .replaceAll("ln", "Math.log(")
-            .replaceAll("sin", "Math.sin(")
-            .replaceAll("cos", "Math.cos(")
-            .replaceAll("tan", "Math.tan(")
-            .replaceAll("nis", "Math.asin(")
-            .replaceAll("soc", "Math.acos(")
-            .replaceAll("nat", "Math.atan("));
-}
-function validUserString(givenString) {
-    return (givenString
-        .replaceAll("log", "log(")
-        .replaceAll("ln", "ln(")
-        .replaceAll("sin", "sin(")
-        .replaceAll("cos", "cos(")
-        .replaceAll("tan", "tan(")
-        .replaceAll("nis", "sin^-1(")
-        .replaceAll("soc", "cos^-1(")
-        .replaceAll("nat", "tan^-1("));
-
-}  
-const trimOutput = function(inputMessage, index) {
-    return inputMessage.slice(0, index + 5);
-}
-
-const getclickedButtonId = function(event) {
-    const clickedButton = event.target;
-    let isSvgOrPath =  clickedButton instanceof SVGElement || clickedButton instanceof SVGPathElement;  // check clicked button is SVG or path
-    
-    if(isSvgOrPath) {
-        return clickedButton.parentElement.id;
+    //eanble disable memory button
+    if(memoryStorage.length > 0) {
+        enableMemoryButton(document.querySelectorAll(".low-op-button"));
     } else {
-        if(clickedButton.id === "trigonometry") {
-            return  document.querySelector("#trigonometry").value;
-        } else {
-            return clickedButton.id;
-        }
+        disableMemoryButton(document.querySelectorAll(".low-op-button"));
     }
-}
-
-const getDisplay = function() {
-    let input = document.querySelector(".question");
-    let output = document.querySelector(".answer");
-
-    return [input, output];
-}
-const showError = function(errMsg) {
-    let output = getDisplay()[1];
-    output.innerText = errMsg;
-    output.style.color = "red";
-}
-const validInput = function(inputMessage) {
-    if(Number(inputMessage) !== NaN) {
-        console.log(Number(inputMessage));
-        return true;
-    } 
-    return false;
-}
-
-const memoryOperation = function(clickedButtonId) {
-    if(clickedButtonId === "MC") {
-        memoryStorage = [];
-    } else if(clickedButtonId === "MR") {
-        input.innerText += memoryStorage[0] !== undefined ? memoryStorage[0] : 0;
-    } else if(clickedButtonId === "M+" || clickedButtonId === "M-" || clickedButtonId === "MS") {
-        if(output.innerText.length > 0) {
-            if(clickedButtonId === "MS") {
-                memoryStorage[0] = output.innerText;
-            } else {
-                let getValue = memoryStorage[0];
-                memoryStorage[0] = eval(Number(output.innerText) + clickedButtonId.charAt(1) + getValue);
-            }
-        } else {
-            showError("provide input");
-        }
-    } 
 }

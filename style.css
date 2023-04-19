@@ -18,13 +18,15 @@ body {
     align-items: center;
 }
 .calculator{
-    width: 400px;
+    width: 390px;
     height: auto;
     display: flex;
     background-color: #f2f2f2;
 
     flex-direction: column;
     justify-content: center;
+
+    user-select: none;
 }
 
 /*---------Display----------*/
@@ -53,9 +55,6 @@ body {
 }
 .m-button, .t-button, .f-button {
     padding: 15px;
-}
-.low-op-button {
-    opacity: .3;
 }
 
 /*---------Trigonometry buttons----------*/
@@ -98,7 +97,23 @@ body {
 .equalTo {
     background-color: #91c1e7;
 }
-.button, .m-button, .t-button{
-    user-select: none;
+.button,.t-button{
     cursor: pointer;
+}
+.low-op-button {
+    cursor: not-allowed;
+    opacity: .3;
+}
+
+/*---------responsive----------*/
+@media (max-width: 400px) {
+    .calculator {
+        width: 360px;
+    }
+}
+
+@media (max-width: 300px) {
+    .calculator {
+        width: 260px;
+    }
 }
