@@ -47,6 +47,43 @@ const disableMemoryButton = function(buttons) {
 }
 
 // memory and validation functions
+const equalTo = function(answer, answerString, input, output) {
+    try {
+                   
+        let n = inputString.length, i = 0;
+
+        if(inputString.indexOf("!") !== -1) {
+            while(i < n) {
+                if(answerString.charAt(i) === "!") {
+                    let factorial = getFact(answerString, i);
+                    answerString = answerString.substring(0, factorial[1]) + factorial[0] + answerString.substring(factorial[2] + 1, answerString.length);
+                    i = answerString.indexOf("!");
+                    n = answerString.length;
+                } else {
+                    i += 1;
+                }
+            }
+        } else {
+            answerString = inputString;
+        }
+        
+        answer = eval(answerString);
+
+        if(answer.toString() == "NaN") {
+            throw new Error("");
+        }
+
+        prevInput = input.innerText;
+
+        inputString = answer;
+        input.innerText = output.innerText = inputString;
+        prevUserButton = prevComputerButton = inputString;
+        output.style.color = "black";
+
+    } catch (error) {
+        showError("Error");
+    }
+}
 const validInput = function(inputMessage) {
     if(Number(inputMessage) !== NaN) {
         console.log(Number(inputMessage));
@@ -156,6 +193,7 @@ const fact = function(number) {
 
 
 let prevUserButton = [], prevComputerButton = [];
+let prevInput = "";
 function handleClick(event) {
 
     let input = getDisplay()[0];
@@ -176,43 +214,16 @@ function handleClick(event) {
         case "clear":
             input.innerText = input.innerText.substring(0 ,input.innerText.length - prevUserButton.length);
             inputString = inputString.substring(0, inputString.length - prevComputerButton.length);
-
             break;
 
         case "=":
-            try {
-                let answer, answerString = inputString;           
-                let n = inputString.length, i = 0;
+            let answer, answerString = inputString;
+            equalTo(answer, answerString, input, output);
+            break;
 
-                if(inputString.indexOf("!") !== -1) {
-                    while(i < n) {
-                        if(answerString.charAt(i) === "!") {
-                            let factorial = getFact(answerString, i);
-                            answerString = answerString.substring(0, factorial[1]) + factorial[0] + answerString.substring(factorial[2] + 1, answerString.length);
-                            i = answerString.indexOf("!");
-                            n = answerString.length;
-                        } else {
-                            i += 1;
-                        }
-                    }
-                } else {
-                    answerString = inputString
-                }
-                
-                answer = eval(answerString);
-
-                if(answer.toString() == "NaN") {
-                    throw new Error("");
-                }
-
-                inputString = answer;
-                input.innerText = output.innerText = inputString;
-                prevUserButton = prevComputerButton = inputString;
-                output.style.color = "black";
-
-            } catch (error) {
-                showError("Error");
-            }
+        case "prev":
+            inputString = input.innerText = prevInput;
+            output.innerText = "";
             break;
 
         case basicOperator.includes(clickedButtonId) || number.includes(clickedButtonId) || moderateOperator.includes(clickedButtonId)? clickedButtonId: false:
@@ -304,8 +315,6 @@ function handleClick(event) {
             break;
     }
 
-    console.log(input.innerText);
-    console.log(inputString);
     //eanble disable memory button
     if(memoryStorage.length > 0) {
         enableMemoryButton(document.querySelectorAll(".low-op-button"));
