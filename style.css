@@ -11,6 +11,10 @@ body {
     align-items:center;
 }
 
+svg, svg *{
+    pointer-events: none;
+}
+
 /*---------Calculator Container----------*/
 #calc {
     display: flex;

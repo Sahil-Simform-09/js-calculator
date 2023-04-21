@@ -13,49 +13,13 @@ const Trigonometry = ["sin", "cos", "tan", "nat", "nis", "soc"];
 const memory = ["M+", "M-", "MS", "MR", "MC"];
 let memoryStorage = [];
 
-// validate input for user and computer
-function validComputerString(givenString) {
-    return  (givenString
-            .replaceAll("mod", "%")
-            .replaceAll("÷", "/")
-            .replaceAll("π", "Math.PI")
-            .replaceAll("e"," Math.E")
-            .replaceAll("^", "**")
-            .replaceAll("log", "Math.log10(")
-            .replaceAll("ln", "Math.log(")
-            .replaceAll("sin", "Math.sin(")
-            .replaceAll("cos", "Math.cos(")
-            .replaceAll("tan", "Math.tan(")
-            .replaceAll("nis", "Math.asin(")
-            .replaceAll("soc", "Math.acos(")
-            .replaceAll("nat", "Math.atan("));
-}
-function validUserString(givenString) {
-    return (givenString
-        .replaceAll("log", "log(")
-        .replaceAll("ln", "ln(")
-        .replaceAll("sin", "sin(")
-        .replaceAll("cos", "cos(")
-        .replaceAll("tan", "tan(")
-        .replaceAll("nis", "sin^-1(")
-        .replaceAll("soc", "cos^-1(")
-        .replaceAll("nat", "tan^-1("));
-}  
-
 // DOM manipulation functions
 const getclickedButtonId = function(event) {
     const clickedButton = event.target;
-    let isSvgOrPath =  clickedButton instanceof SVGElement || clickedButton instanceof SVGPathElement;  // check clicked button is SVG or path
-    
-    if(isSvgOrPath) {
-        return clickedButton.parentElement.id;
-    } else {
-        if(clickedButton.id === "trigonometry") {
-            return  document.querySelector("#trigonometry").value;
-        } else {
-            return clickedButton.id;
-        }
+    if(clickedButton.id === "trigonometry") {
+        return  document.querySelector("#trigonometry").value;
     }
+    return clickedButton.id;
 }
 const getDisplay = function() {
     let input = document.querySelector(".question");
@@ -82,7 +46,7 @@ const disableMemoryButton = function(buttons) {
     }); 
 }
 
-// calculator logic functions
+// memory and validation functions
 const validInput = function(inputMessage) {
     if(Number(inputMessage) !== NaN) {
         console.log(Number(inputMessage));
@@ -90,12 +54,38 @@ const validInput = function(inputMessage) {
     } 
     return false;
 }
+const validComputerString = function(givenString) {
+    return  (givenString
+            .replaceAll("mod", "%")
+            .replaceAll("÷", "/")
+            .replaceAll("π", "Math.PI")
+            .replaceAll("e"," Math.E")
+            .replaceAll("^", "**")
+            .replaceAll("log", "Math.log10(")
+            .replaceAll("ln", "Math.log(")
+            .replaceAll("sin", "Math.sin(")
+            .replaceAll("cos", "Math.cos(")
+            .replaceAll("tan", "Math.tan(")
+            .replaceAll("nis", "Math.asin(")
+            .replaceAll("soc", "Math.acos(")
+            .replaceAll("nat", "Math.atan("));
+}
+const validUserString = function(givenString) {
+    return (givenString
+        .replaceAll("log", "log(")
+        .replaceAll("ln", "ln(")
+        .replaceAll("sin", "sin(")
+        .replaceAll("cos", "cos(")
+        .replaceAll("tan", "tan(")
+        .replaceAll("nis", "sin^-1(")
+        .replaceAll("soc", "cos^-1(")
+        .replaceAll("nat", "tan^-1("));
+}  
 const memoryOperation = function(clickedButtonId, input, output) {
     if(clickedButtonId === "MC") {
         memoryStorage = [];
     } else if(clickedButtonId === "MR") {
         if(memoryStorage.length > 0) {
-            console.log("f g r");
            return memoryStorage[0] !== undefined ? memoryStorage[0] : 0;
         }
     } else if(clickedButtonId === "M+" || clickedButtonId === "M-" || clickedButtonId === "MS") {
@@ -111,6 +101,8 @@ const memoryOperation = function(clickedButtonId, input, output) {
         }
     } 
 }
+
+// factorial functionality
 const validFactString = function(factString) {
     let barackets = 0;
     let index = 0;
@@ -162,6 +154,8 @@ const fact = function(number) {
     return ans;
 }
 
+
+let prevUserButton = [], prevComputerButton = [];
 function handleClick(event) {
 
     let input = getDisplay()[0];
@@ -169,20 +163,20 @@ function handleClick(event) {
 
     let clickedButtonId = getclickedButtonId(event); 
 
-    // clear output screen
+    // remove error message
     if(output.style.color == "red") {
         output.innerText = "";
     }
 
-    let userPrevButton, computerPrevButton;
     switch (clickedButtonId) {
         case "AC":
             inputString = output.innerText = input.innerText = ""; 
             break;
 
         case "clear":
-            input.innerText = input.innerText.slice(0, input.innerText.length - 1);
-            inputString = inputString.slice(0, inputString.length - 1);
+            input.innerText = input.innerText.substring(0 ,input.innerText.length - prevUserButton.length);
+            inputString = inputString.substring(0, inputString.length - prevComputerButton.length);
+
             break;
 
         case "=":
@@ -212,8 +206,8 @@ function handleClick(event) {
                 }
 
                 inputString = answer;
-                output.innerText = inputString;
-                input.innerText = output.innerText;
+                input.innerText = output.innerText = inputString;
+                prevUserButton = prevComputerButton = inputString;
                 output.style.color = "black";
 
             } catch (error) {
@@ -229,7 +223,10 @@ function handleClick(event) {
             } else {
                 
                 inputString += validComputerString(clickedButtonId);
+                prevComputerButton = validComputerString(clickedButtonId);
+       
                 input.innerText += clickedButtonId;
+                prevUserButton = clickedButtonId;
             }
             break;
         
@@ -240,6 +237,9 @@ function handleClick(event) {
                 charArray.unshift("√(");
                 input.innerText = charArray.join("");
                 inputString = "Math.sqrt(" + inputString;
+
+                prevUserButton = "√(";
+                prevComputerButton = inputString;
 
             } else if(clickedButtonId === "+/-") {
                 if(output.innerText.length > 0) {
@@ -264,16 +264,25 @@ function handleClick(event) {
 
             } else if(clickedButtonId === "||") {
                 input.innerText = "|" + input.innerText + "|";
+                prevUserButton = input.innerText;
+
                 inputString = "Math.abs(" + inputString + ")";
+                prevComputerButton = input.innerText;
             } else {
                 input.innerText += validUserString(clickedButtonId);
+                prevUserButton = validUserString(clickedButtonId);
+
                 inputString += validComputerString(clickedButtonId);
+                prevComputerButton = validComputerString(clickedButtonId);
             }
             break;
         
         case Trigonometry.includes(clickedButtonId) ? clickedButtonId: false:
             input.innerText += validUserString(clickedButtonId);
+            prevUserButton = validUserString(clickedButtonId);
+
             inputString += validComputerString(clickedButtonId);  
+            prevComputerButton = validComputerString(clickedButtonId);
             break;  
         
         case memory.includes(clickedButtonId) ? clickedButtonId: false:
@@ -286,12 +295,17 @@ function handleClick(event) {
 
         case "!":
             input.innerText += "!";
+            prevUserButton = "!"; 
+
             inputString += "!";
+            prevComputerButton = "!";
             break;
         default:
             break;
     }
 
+    console.log(input.innerText);
+    console.log(inputString);
     //eanble disable memory button
     if(memoryStorage.length > 0) {
         enableMemoryButton(document.querySelectorAll(".low-op-button"));
