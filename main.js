@@ -90,31 +90,17 @@ const validInput = function(inputMessage) {
     } 
     return false;
 }
-const validFactString = function(factString) {
-    let barackets = 0;
-    let index = 0;
-    for(let i = 0; i < factString.length; i += 1) {
-        if(factString.charAt(i) === "(") {
-            barackets += 1;
-            index = 1;
-        } else if(factString.charAt(i) === ")") {
-            barackets -= 1;
-        }
-    }
-
-    return barackets === 0 ? [true, index] : [false, -1];
-}
 const memoryOperation = function(clickedButtonId, input, output) {
     if(clickedButtonId === "MC") {
         memoryStorage = [];
     } else if(clickedButtonId === "MR") {
         if(memoryStorage.length > 0) {
-            inputString += input.innerText += memoryStorage[0];
+            console.log("f g r");
+           return memoryStorage[0] !== undefined ? memoryStorage[0] : 0;
         }
     } else if(clickedButtonId === "M+" || clickedButtonId === "M-" || clickedButtonId === "MS") {
         if(output.innerText.length > 0) {
-            if(clickedButtonId === "MS") {
-                
+            if(clickedButtonId === "MS") {    
                 memoryStorage[0] = output.innerText;
             } else {
                 let getValue = memoryStorage[0];
@@ -124,6 +110,49 @@ const memoryOperation = function(clickedButtonId, input, output) {
             showError("get answer first");
         }
     } 
+}
+const validFactString = function(factString) {
+    let barackets = 0;
+    let index = 0;
+    for(let i = 0; i < factString.length; i += 1) {
+        if(factString.charAt(i) === "(") {
+            barackets += 1;
+            index = i;
+        } else if(factString.charAt(i) === ")") {
+            barackets -= 1;
+        }
+    }
+
+    return barackets === 0 ? [true, index] : [false, -1];
+}
+const getFact = function(inputString, index) {
+    const getFactString = []; 
+    let char = inputString.charAt(index - 1);
+    let startIndex;
+
+    if(number.includes(char)) {
+        
+        let i = index - 1;
+        while(number.includes(char)) {
+            i -= 1;
+            char = inputString.charAt(i);
+        }
+        startIndex = i + 1;
+        getFactString[0] = inputString.substring(i+1, index);
+    } else if(char === ")") {
+
+        let isValid = validFactString(inputString);
+        if(isValid[0]) {
+            getFactString[0] = eval(inputString.substring(isValid[1], index));
+            startIndex = isValid[1];
+        } else {
+            showError("invalid input");
+        }
+    }
+
+    getFactString[1] = startIndex;
+    getFactString[2] = index;
+    return [fact(Number(getFactString[0])).toString(), getFactString[1], getFactString[2]]; 
 }
 const fact = function(number) {
     let ans = 1;
@@ -141,8 +170,11 @@ function handleClick(event) {
     let clickedButtonId = getclickedButtonId(event); 
 
     // clear output screen
-    output.innerText = "";
+    if(output.style.color == "red") {
+        output.innerText = "";
+    }
 
+    let userPrevButton, computerPrevButton;
     switch (clickedButtonId) {
         case "AC":
             inputString = output.innerText = input.innerText = ""; 
@@ -155,40 +187,24 @@ function handleClick(event) {
 
         case "=":
             try {
-                let answer, answerString;
-                const getFactString = [];            
+                let answer, answerString = inputString;           
+                let n = inputString.length, i = 0;
 
                 if(inputString.indexOf("!") !== -1) {
-                    let index = inputString.indexOf("!");
-                    let char = inputString.charAt(index - 1);
-
-                    if(number.includes(char)) {
-                        
-                        let i = index - 1;
-                        while(number.includes(char)) {
-                            i -= 1;
-                            char = inputString.charAt(i);
-                        }
-                        getFactString[0] = inputString.substring(i+1, index);
-                        getFactString[1] = i;
-                        getFactString[2] = index;
-                    } else if(char === ")") {
-
-                        let isValid = validFactString(inputString)[0];
-                        if(isValid[0]) {
-                            getFactString = eval(inputString.substring(isValid[1], index));
+                    while(i < n) {
+                        if(answerString.charAt(i) === "!") {
+                            let factorial = getFact(answerString, i);
+                            answerString = answerString.substring(0, factorial[1]) + factorial[0] + answerString.substring(factorial[2] + 1, answerString.length);
+                            i = answerString.indexOf("!");
+                            n = answerString.length;
                         } else {
-                            showError("invalid input");
+                            i += 1;
                         }
                     }
-
-                    let factorial = fact(getFactString[0]).toString();
-                    answerString = inputString.substring(0, getFactString[1] + 1) + factorial + inputString.substring(getFactString[2] + 1, inputString.length);
                 } else {
                     answerString = inputString
                 }
                 
-                console.log(answerString);
                 answer = eval(answerString);
 
                 if(answer.toString() == "NaN") {
@@ -201,7 +217,6 @@ function handleClick(event) {
                 output.style.color = "black";
 
             } catch (error) {
-                console.log(error);
                 showError("Error");
             }
             break;
@@ -209,7 +224,8 @@ function handleClick(event) {
         case basicOperator.includes(clickedButtonId) || number.includes(clickedButtonId) || moderateOperator.includes(clickedButtonId)? clickedButtonId: false:
             const index = input.innerText.length - 1;
             if(basicOperator.includes(clickedButtonId) && basicOperator.includes(input.innerText.charAt(index))) {
-                input.innerText = inputString = inputString.toString().slice(0, index) + clickedButtonId;
+                input.innerText = inputString.toString().slice(0, index) + clickedButtonId;
+                inputString = inputString.toString().slice(0, index) + clickedButtonId;
             } else {
                 
                 inputString += validComputerString(clickedButtonId);
@@ -261,7 +277,11 @@ function handleClick(event) {
             break;  
         
         case memory.includes(clickedButtonId) ? clickedButtonId: false:
-            memoryOperation(clickedButtonId, input, output);
+            let valFromMemory = memoryOperation(clickedButtonId, input, output);
+            if(valFromMemory !== undefined) {
+                inputString += valFromMemory;
+                input.innerText += valFromMemory;
+            }
             break;
 
         case "!":
