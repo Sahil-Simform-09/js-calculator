@@ -1,44 +1,45 @@
 // get button & add event listner
-const parentButton = document.querySelector(".buttons");
+const parentButton = document.querySelector(".buttons")!;
 let inputString = "";
 
 parentButton.addEventListener('click', handleClick);
 
 // array of all type of functionallity in calculator
-const basicOperator = ["+", "-", "÷", "*"];
-const moderateOperator = ["mod", "(", ")", "π", "e"]
-const number = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-const xTypefunction = ["^2", "√", "||", "e^", "^-1", "^", "10^","e", "log", "ln", "+/-","."];
-const Trigonometry = ["sin", "cos", "tan", "nat", "nis", "soc"];
-const memory = ["M+", "M-", "MS", "MR", "MC"];
-let memoryStorage = [];
+const basicOperator: string[] = ["+", "-", "÷", "*"];
+const moderateOperator: string[] = ["mod", "(", ")", "π", "e"]
+const number: string[] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+const xTypefunction: string[] = ["^2", "√", "||", "e^", "^-1", "^", "10^","e", "log", "ln", "+/-","."];
+const Trigonometry: string[] = ["sin", "cos", "tan", "nat", "nis", "soc"];
+const memory: string[] = ["M+", "M-", "MS", "MR", "MC"];
+let memoryStorage: string[] = [];
 
 // DOM manipulation functions
-const getclickedButtonId = function(event) {
-    const clickedButton = event.target;
+const getclickedButtonId = function(event: any) {
+    const clickedButton = event.target as HTMLButtonElement;
     if(clickedButton.id === "trigonometry") {
-        return  document.querySelector("#trigonometry").value;
+      return  (document.querySelector("#trigonometry")! as HTMLInputElement).value;
     }
     return clickedButton.id;
 }
 const getDisplay = function() {
-    let input = document.querySelector(".question");
-    let output = document.querySelector(".answer");
+    let input = document.querySelector(".question")! as HTMLDivElement;
+    let output = document.querySelector(".answer")! as HTMLDivElement;
 
     return [input, output];
 }
-const showError = function(errMsg) {
+const showError = function(errMsg: string) {
     let output = getDisplay()[1];
     output.innerText = errMsg;
     output.style.color = "red";
 }
-const enableMemoryButton = function(buttons) {
+
+const enableMemoryButton = function(buttons: NodeListOf<HTMLButtonElement>) {
     buttons.forEach(button => {
         button.style.cursor = "pointer";
         button.style.opacity = "1"
     }); 
 }
-const disableMemoryButton = function(buttons) {
+const disableMemoryButton = function(buttons: NodeListOf<HTMLButtonElement>) {
     buttons.forEach(button => {
         button.removeEventListener("click", handleClick);
         button.style.cursor = "not-allowed";
@@ -47,7 +48,7 @@ const disableMemoryButton = function(buttons) {
 }
 
 // memory and validation functions
-const equalTo = function(answer, answerString, input, output) {
+const equalTo = function(answer: string, answerString: string, input: HTMLDivElement, output: HTMLDivElement) {
     try {
                    
         let n = inputString.length, i = 0;
@@ -55,8 +56,8 @@ const equalTo = function(answer, answerString, input, output) {
         if(inputString.indexOf("!") !== -1) {
             while(i < n) {
                 if(answerString.charAt(i) === "!") {
-                    let factorial = getFact(answerString, i);
-                    answerString = answerString.substring(0, factorial[1]) + factorial[0] + answerString.substring(factorial[2] + 1, answerString.length);
+                    let factorial: Array<string | number> = getFact(answerString, i);
+                    answerString = answerString.substring(0, +factorial[1]) + factorial[0] + answerString.substring(+factorial[2] + 1, answerString.length);
                     i = answerString.indexOf("!");
                     n = answerString.length;
                 } else {
@@ -84,14 +85,7 @@ const equalTo = function(answer, answerString, input, output) {
         showError("Error");
     }
 }
-const validInput = function(inputMessage) {
-    if(Number(inputMessage) !== NaN) {
-        console.log(Number(inputMessage));
-        return true;
-    } 
-    return false;
-}
-const validComputerString = function(givenString) {
+const validComputerString = function(givenString: any) {
     return  (givenString
             .replaceAll("mod", "%")
             .replaceAll("÷", "/")
@@ -107,31 +101,31 @@ const validComputerString = function(givenString) {
             .replaceAll("soc", "Math.acos(")
             .replaceAll("nat", "Math.atan("));
 }
-const validUserString = function(givenString) {
+const validUserString = function(givenString: string) {
     return (givenString
-        .replaceAll("log", "log(")
-        .replaceAll("ln", "ln(")
-        .replaceAll("sin", "sin(")
-        .replaceAll("cos", "cos(")
-        .replaceAll("tan", "tan(")
-        .replaceAll("nis", "sin^-1(")
-        .replaceAll("soc", "cos^-1(")
-        .replaceAll("nat", "tan^-1("));
+        .replace("log", "log(")
+        .replace("ln", "ln(")
+        .replace("sin", "sin(")
+        .replace("cos", "cos(")
+        .replace("tan", "tan(")
+        .replace("nis", "sin^-1(")
+        .replace("soc", "cos^-1(")
+        .replace("nat", "tan^-1("));
 }  
-const memoryOperation = function(clickedButtonId, input, output) {
+const memoryOperation = function(clickedButtonId: string, output: HTMLDivElement) {
     if(clickedButtonId === "MC") {
-        memoryStorage = [];
+      memoryStorage = [];
     } else if(clickedButtonId === "MR") {
         if(memoryStorage.length > 0) {
-           return memoryStorage[0] !== undefined ? memoryStorage[0] : 0;
+          return memoryStorage[0] !== undefined ? memoryStorage[0] : 0;
         }
     } else if(clickedButtonId === "M+" || clickedButtonId === "M-" || clickedButtonId === "MS") {
         if(output.innerText.length > 0) {
             if(clickedButtonId === "MS") {    
-                memoryStorage[0] = output.innerText;
+              memoryStorage[0] = output.innerText;
             } else {
-                let getValue = memoryStorage[0];
-                memoryStorage[0] = eval(Number(output.innerText) + clickedButtonId.charAt(1) + getValue);
+              let getValue = memoryStorage[0];
+              memoryStorage[0] = eval(Number(output.innerText) + clickedButtonId.charAt(1) + getValue);
             }
         } else {
             showError("get answer first");
@@ -140,7 +134,7 @@ const memoryOperation = function(clickedButtonId, input, output) {
 }
 
 // factorial functionality
-const validFactString = function(factString) {
+const validFactString = function(factString: string) {
     let barackets = 0;
     let index = 0;
     for(let i = 0; i < factString.length; i += 1) {
@@ -152,12 +146,13 @@ const validFactString = function(factString) {
         }
     }
 
-    return barackets === 0 ? [true, index] : [false, -1];
+    let checkValidFactString: [boolean, number];
+    return barackets === 0 ? checkValidFactString = [true, index] : checkValidFactString= [false, -1];
 }
-const getFact = function(inputString, index) {
-    const getFactString = []; 
+const getFact = function(inputString: string, index: number) {
+    const getFactString: Array<string | number> = []; 
     let char = inputString.charAt(index - 1);
-    let startIndex;
+    let startIndex = 0;
 
     if(number.includes(char)) {
         
@@ -167,7 +162,7 @@ const getFact = function(inputString, index) {
             char = inputString.charAt(i);
         }
         startIndex = i + 1;
-        getFactString[0] = inputString.substring(i+1, index);
+        getFactString.push(inputString.substring(i+1, index));
     } else if(char === ")") {
 
         let isValid = validFactString(inputString);
@@ -181,20 +176,25 @@ const getFact = function(inputString, index) {
 
     getFactString[1] = startIndex;
     getFactString[2] = index;
-    return [fact(Number(getFactString[0])).toString(), getFactString[1], getFactString[2]]; 
+    const factorialOfNumber: Array<string | number> = [];
+
+    factorialOfNumber.push(fact(Number(getFactString[0])).toString());
+    factorialOfNumber.push(getFactString[1]);
+    factorialOfNumber.push(getFactString[2]);
+    return factorialOfNumber; 
 }
-const fact = function(number) {
+const fact = function(myNumber: number) {
     let ans = 1;
-    for(let i = 1; i <= number; i += 1) {
-        ans *= i;
+    for(let i = 1; i <= myNumber; i += 1) {
+      ans *= i;
     }
     return ans;
 }
 
 
-let prevUserButton = [], prevComputerButton = [];
-let prevInput = "";
-function handleClick(event) {
+let prevUserButton: string, prevComputerButton: string;
+let prevInput = "";           
+function handleClick(event: object) {
 
     let input = getDisplay()[0];
     let output = getDisplay()[1];
@@ -217,7 +217,8 @@ function handleClick(event) {
             break;
 
         case "=":
-            let answer, answerString = inputString;
+            let answer = "";
+            let answerString = inputString;
             equalTo(answer, answerString, input, output);
             break;
 
@@ -244,7 +245,7 @@ function handleClick(event) {
         case xTypefunction.includes(clickedButtonId) ? clickedButtonId: false:
 
             if(clickedButtonId === "√") {
-                charArray = input.innerText.split("");
+                const charArray = input.innerText.split("");
                 charArray.unshift("√(");
                 input.innerText = charArray.join("");
                 inputString = "Math.sqrt(" + inputString;
@@ -254,9 +255,9 @@ function handleClick(event) {
 
             } else if(clickedButtonId === "+/-") {
                 if(output.innerText.length > 0) {
-                    outputCharArray = output.innerText.split("");
-                    computerCharArray = inputString.toString().split("");
-                    userCharArray = input.innerText.split("");
+                    const outputCharArray = output.innerText.split("");
+                    const computerCharArray = inputString.toString().split("");
+                    const userCharArray = input.innerText.split("");
                     if(outputCharArray[0] === "-") {
                         outputCharArray.shift();
                         computerCharArray.shift();
@@ -297,7 +298,7 @@ function handleClick(event) {
             break;  
         
         case memory.includes(clickedButtonId) ? clickedButtonId: false:
-            let valFromMemory = memoryOperation(clickedButtonId, input, output);
+            let valFromMemory = memoryOperation(clickedButtonId, output);
             if(valFromMemory !== undefined) {
                 inputString += valFromMemory;
                 input.innerText += valFromMemory;
@@ -317,8 +318,8 @@ function handleClick(event) {
 
     //eanble disable memory button
     if(memoryStorage.length > 0) {
-        enableMemoryButton(document.querySelectorAll(".low-op-button"));
+        enableMemoryButton(document.querySelectorAll(".low-op-button")! as NodeListOf<HTMLButtonElement>);
     } else {
-        disableMemoryButton(document.querySelectorAll(".low-op-button"));
+        disableMemoryButton(document.querySelectorAll(".low-op-button")! as NodeListOf<HTMLButtonElement>);
     }
 }
